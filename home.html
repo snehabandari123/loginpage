@@ -9,8 +9,48 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/20c5629a29.js" crossorigin="anonymous"></script>
 </head>
+<style>
+    .bg-container {
+    background-image: linear-gradient(to right, #4188da, #2be3c6);
+}
+
+.heading {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.request-url-text {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.request-url {
+    font-weight: 300;
+}
+
+.button {
+    color: #ffffff;
+    background-color: #0967d2;
+    font-size: 14px;
+    border-width: 0;
+    border-radius: 4px;
+}
+
+.request-status {
+    color: #ffffff;
+    font-family: "Roboto";
+    font-size: 24px;
+}
+
+.http-response {
+    color: #ffffff;
+    font-family: "Roboto";
+    font-size: 14px;
+}
+</style>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">
           <img src="https://res.cloudinary.com/dbwgwgulq/image/upload/v1688645320/CP-1_ayum1s.webp" style="height:90px;width:90px;"/>
         </a>
@@ -20,55 +60,54 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ml-auto">
             <a class="nav-link active" href="#sectionHome">Home <span class="sr-only">(current)</span></a>
-            <button type = "button" class = "btn" onclick = "logout()"> Logout</button>
+            <button type = "button" class = "btn" id="logoutButton"> Logout</button>
           </div>
         </div>
-      </nav> 
-      <div id="data-container"></div> 
+</nav> 
+<div class="p-3 bg-container">
+    <h1 class="heading mb-4">Get method practice</h1>
+    <label for="link">REQUEST URL: </p>
+    <input type="text" id="link"/>
+    <button class="mt-3 ml-5 p-2 button" id='sendGetRequestBtn'>Send Get Request</button>
+    <hr />
+    <div class="p-2 mt-4">
+        <p>Request Status</p>
+        <p class="request-status" id='requestStatus'></p>
+    </div>
+    <hr/>
+    <div class="p-2 mt-4">
+        <p>Response Body</p>
+        <p class="http-response" id='httpResponse'></p>
+    </div>
+</div>
 </body>
 <script>
-     document.addEventListener("DOMContentLoaded", () => {
-  const dataContainer = document.getElementById("data-container");
-
-  const fetchData = () => {
-    const apiUrl = "https://jsonplaceholder.typicode.com/users"; 
-
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+let sendGetRequestBtnEl=document.getElementById('sendGetRequestBtn');
+let requestStatusEl=document.getElementById('requestStatus');
+let httpResponseEl=document.getElementById('httpResponse');
+let logoutButtonEl=document.getElementById('logoutButton');
+let linkEl=document.getElementById('link');
+sendGetRequestBtnEl.addEventListener('click',function(){
+    let option={
+        method:'GET',
+        header: {
+            'content Type': 'application/json',
+            Accept: 'application/json'
         }
+    }
+    let url=linkEl.value;
+    fetch(url,option)
+    .then(function(response){
+        requestStatusEl.textContent=response.status;
         return response.json();
-      })
-      .then(data => {
-        displayData(data);
-      })
-      .catch(error => {
-        console.error("Fetch error:", error);
-        dataContainer.textContent = "Failed to fetch data."; 
-      });
-  };
+    })
+    .then(function(data){
+        httpResponseEl.textContent=JSON.stringify(data);
+    })
+})
+logoutButtonEl.addEventListener('click',function(){
+    window.location.href='login.html';
+}) 
 
-  const displayData = data => {
-    dataContainer.innerHTML = ""; 
-    data.forEach(item => {
-      const itemDiv = document.createElement("div");
-      itemDiv.textContent = `${item.id} - ${item.name} - ${item.username} - ${item.email}`; 
-      dataContainer.appendChild(itemDiv);
-    });
-  };
-
-  fetchData();
-});
-async function fetchdata(){
-const temp = await fetch('https://jsonplaceholder.typicode.com/users');
-let data=await temp.json()
-console.log(data)
-return data}
-fetchdata()
- 
-      function logout(){
-          window.location.href="login.html";
-      }
 </script>
 </html>
